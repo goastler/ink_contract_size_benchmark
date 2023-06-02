@@ -30,12 +30,13 @@ Takeaways (from release contract size):
 - adding another `BTreeMap` adds 0.5KB, so `BTreeMap` is slightly heavier than `BTreeSet`
 - adding another `Mapping` takes 0.6KB
 
-### As the value type of `Mapping`
-- a `Mapping` with `Vec` as the value type is 1.4KB
-- a `Mapping` with `BTreeSet` as the value type is 1.0KB (I think this is small because a lot of the `BTreeSet` functionality is not used due to it being the value of a `Mapping`, and therefore removed from the contract)
-- a `Mapping` with `BTreeMap` as the value type is 1.1KB (I think this is small because a lot of the `BTreeMap` functionality is not used due to it being the value of a `Mapping`, and therefore removed from the contract)
+### As the value type of `Mapping` (on top of the 0.5KB for a `Mapping` in the first place)
+- a `Mapping` with `Vec` adds 0.6KB
+- a `Mapping` with `BTreeSet` adds ~0KB (I think this is small because a lot of the `BTreeSet` functionality is not used due to it being the value of a `Mapping`, and therefore removed from the contract)
+- a `Mapping` with `BTreeMap` adds 0.4KB
 
-### Conclusion
-- `Mapping` is a lot lighter-weight that `BTreeSet` or `BTreeMap` to import (I imagine this is because `Mapping` is always compiled into the contract, so is present in the empty contract and importing it does not do anything. This is supported by the single `Mapping` contract increase being almost equal to that of adding another `Mapping` above)
+### Comparison
+- `Mapping` is a lot lighter-weight than `BTreeSet` or `BTreeMap` to import (I imagine this is because `Mapping` is always compiled into the contract, so is present in the empty contract and importing it does not do anything. This is supported by the single `Mapping` contract increase being almost equal to that of adding another `Mapping` above)
 - adding additional `Mapping`, `BTreeSet` or `BTreeMap` increases contract size by ~0.5KB for each
 - adding additional `Vec` is rather expensive at 2.3KB each, but the original import is much smaller than `BTreeSet` or `BTreeMap`
+- having data structures like `Vec`, `BTreeSet` or `BTreeMap` loaded via a `Mapping` costs less than having them in the contract storage directly. (I imagine this is because much of their functionality can be optimised away based on their usage)
