@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import fs from 'fs';
 
 interface ExecOutput {
     stdout: string;
@@ -8,7 +9,7 @@ interface ExecOutput {
 
 const exec = (command: string, options?: {
     printOnData?: boolean
-}) => {
+}) : Promise<ExecOutput> => {
     return new Promise((resolve, reject) => {
         const proc = spawn(command, { shell: true });
         
@@ -29,7 +30,7 @@ const exec = (command: string, options?: {
             resolve({
                 stdout: stdout.join(''),
                 stderr: stderr.join(''),
-                code
+                code: code || 0,
             });
         });
 
@@ -45,7 +46,43 @@ const exec = (command: string, options?: {
 }
 
 const main = async () => {
-    let output = await exec(`cd ../contracts/empty && cargo contract build`, { printOnData: true });
+    const contracts = fs.readdirSync(`${__dirname}/../contracts`);
+    const modes = ['debug', 'release'];
+    const codeSizes: string[] = [];
+    const promises: Promise<ExecOutput>[] = [];
+    for(let i = 0; i < modes.length; i++) {
+        const mode = modes[i];
+        let flag = '';
+        if(mode === 'release') flag = '--release';
+        else if(mode === 'debug') flag = '';
+        else throw new Error(`unknown mode: ${mode}`);
+        await Promise.all(promises);
+        for(let j = 0; j < contracts.length; j++) {
+            const contract = contracts[j];
+            const promise = exec(`cd "${__dirname}/../contracts/${contract}" && cargo contract build ${flag}`, { printOnData: true });
+            promises.push(promise);
+        }
+    }
+    for(const promise of promises) {
+        const output = await promise;
+        const lines = output.stdout.split('\n');
+        for(const line of lines) {
+            if(line.startsWith('Original wasm size:')) {
+                let parts = line.split(' ');
+                let codeSize = parts[5];
+                codeSize = codeSize.replace('K', '');
+                codeSizes.push(codeSize);
+                break;
+            }
+        }
+    }
+    for(const mode of modes) {
+        const file = `output-${mode}.csv`;
+        fs.writeFileSync(file, `contract,codeSize\n`);
+        for(const contract of contracts) {
+            fs.writeFileSync(file, `${contract},${codeSizes.shift()}\n`, { flag: 'a' });
+        }
+    }
 }
 
 main().catch(err => {

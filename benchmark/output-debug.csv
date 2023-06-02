@@ -1,0 +1,11 @@
+contract,codeSize
+btreemap,23.9
+btreemap x2,24.3
+btreeset,23.2
+btreeset and btreemap,31.3
+btreeset x2,23.5
+empty,9.6
+mapping,13.3
+mapping containing btreemap,14.5
+mapping containing btreeset,14.4
+mapping x2,13.4
