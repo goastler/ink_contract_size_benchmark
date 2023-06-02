@@ -40,3 +40,22 @@ Takeaways (from release contract size):
 - adding additional `Mapping`, `BTreeSet` or `BTreeMap` increases contract size by ~0.5KB for each
 - adding additional `Vec` is rather expensive at 2.3KB each, but the original import is much smaller than `BTreeSet` or `BTreeMap`
 - having data structures like `Vec`, `BTreeSet` or `BTreeMap` loaded via a `Mapping` costs less than having them in the contract storage directly. (I imagine this is because much of their functionality can be optimised away based on their usage)
+
+|Type|Import size (KB)|Usage size (KB)|
+|---|---|---|
+|`Mapping`|0.5|0.6|
+|`BTreeSet`|8.7|0.4|
+|`BTreeMap`|9.1|0.5|
+|`Vec`|2|2.3|
+* import size is the cost of using only 1 of the data structure
+* usage size is the cost of each additional use of the data structure
+
+
+## Tldr;
+- Avoiding `BTreeSet` or `BTreeMap` can save ~10KB
+- Each `Vec` avoided saves ~2KB
+- Use `Mapping` (or `BTreeSet` or `BTreeMap` if already in use elsewhere) over `Vec` where possible to save ~1.5KB
+- Adding additional `Mapping`, `BTreeSet` or `BTreeMap` all cost approximately the same amount (~0.5KB)
+- Lazy load `BTreeSet`, `BTreeMap` and `Vec` to save ~0.6KB at most
+- Using five or more `BTreeSet`s or `BTreeMap`s is more cost-effective than using `Vec`s
+- Using less than five `Vec`s is more cost-effective than using `BTreeSet`s or `BTreeMap`s
