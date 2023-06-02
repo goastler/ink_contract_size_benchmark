@@ -1,0 +1,14 @@
+contract,codeSize,diff against empty,diff against btreeset,diff against mapping
+btreemap,9.9,9.1,,
+btreemap x2,10.4,9.6,,
+btreeset,9.1,8.3,,
+btreeset and btreemap,16.9,16.1,7.8,
+btreeset x2,9.5,8.7,,
+empty,0.8,0,,
+mapping,1.3,0.5,,
+mapping containing btreemap,1.9,1.1,,0.6
+mapping containing btreeset,1.8,1,,-0.1
+mapping containing vec,2.2,1.4,,0.4
+mapping x2,1.4,0.6,,
+vec,2.8,2,,
+vec x2,3.1,2.3,,
