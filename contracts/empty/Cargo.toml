@@ -1,11 +1,13 @@
 [package]
 name = "contract"
 version = "0.3.0"
-authors = ["George Oastler george@prosopo.io"]
+authors = ["George Oastler"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.2" , default-features = false }
+ink = { version = "4.1" , default-features = false }
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
 
 [lib]
 name = "common"
