@@ -8,4 +8,7 @@ empty,9.6
 mapping,13.3
 mapping containing btreemap,14.5
 mapping containing btreeset,14.4
+mapping containing vec,13.8
 mapping x2,13.4
+vec,14.4
+vec x2,14.6
