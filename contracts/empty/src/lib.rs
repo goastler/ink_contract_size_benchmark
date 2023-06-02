@@ -18,7 +18,7 @@ pub mod contract {
 
         // A function which makes use of the storage to ensure optimisation cannot eliminate it from storage entirely (not sure if this happens, but best to do this just in case).
         #[ink(message)]
-        pub fn func(&self) {
+        pub fn func(&mut self) {
             
         }
     }
